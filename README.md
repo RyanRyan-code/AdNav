@@ -14,9 +14,7 @@ In mac, if you want to launch from terminal, you will need to have your Desktop 
 the endpoint is <br>**ws://localhost:8080/scan**
 
 post body should be like this:
-
 {<br>"latitude": 89,<br>"longitude": 179,<br>"radius" : 2000000<br>}
-
 
 unit for latitude and longitude is degree.
 unit for radius is meters.
