@@ -1,5 +1,19 @@
 # AdNav
 
+## query format
+
+the endpoint is ws://localhost:8080/scan
+
+post body should be like this:
+{
+"latitude": 89,
+"longitude": 179,
+"radius" : 2000000
+}
+
+unit for latitude and longitude is degree.
+unit for radius is meters.
+
 ## ScheduledExecutorService over Timer
 
 Java Timer is unable to deal with client disconnection situations, so ScheduledExecutorService is used over Timer. 
