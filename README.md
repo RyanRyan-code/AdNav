@@ -5,6 +5,8 @@
 > $ docker pull riponway2a/adnav
 > $ docker run -d -p 8080:8080 riponway2a/adnav
 
+In mac, if you want to launch from terminal, you will need to have your Desktop Docker open at the same time. 
+
 ## query format
 
 (for Postman)
