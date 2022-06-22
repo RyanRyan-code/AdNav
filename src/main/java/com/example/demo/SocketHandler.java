@@ -48,10 +48,24 @@ public class SocketHandler extends TextWebSocketHandler {
         //build the full url with query parameters
         String urlMain = "https://data-live.flightradar24.com/zones/fcgi/feed.js";
         String urlBounds = "?bounds=";
-        urlBounds += (latitude+deltaLatitude)+",";
-        urlBounds += (latitude-deltaLatitude)+",";
-        urlBounds += (longitude-deltaLongitude)+",";
-        urlBounds += (longitude+deltaLongitude)+"";
+
+        double minLat, maxLat, minLon, maxLon;
+
+        //edge cases
+        minLat = Math.min(latitude+deltaLatitude, 90);
+        maxLat = Math.max(latitude-deltaLatitude, -90);
+        if(longitude-deltaLongitude>180 || longitude-deltaLongitude<-180 || longitude+deltaLongitude>180 || longitude+deltaLongitude<-180){
+            minLon = -180;
+            maxLon = 180;
+        }else{
+            minLon = longitude-deltaLongitude;
+            maxLon = longitude+deltaLongitude;
+        }
+
+        urlBounds += minLat+",";
+        urlBounds += maxLat+",";
+        urlBounds += minLon+",";
+        urlBounds += maxLon+"";
         URL url = new URL(urlMain + urlBounds);
 
         //connect and get response
