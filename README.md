@@ -15,13 +15,7 @@ the endpoint is **ws://localhost:8080/scan**
 
 post body should be like this:
 
-{
-"latitude": 89,
-
-"longitude": 179,
-
-"radius" : 2000000
-}
+{<br>"latitude": 89,<br>"longitude": 179,<br>"radius" : 2000000<br>}
 
 
 unit for latitude and longitude is degree.
