@@ -1,7 +1,13 @@
 # AdNav
 
+## how to run
+
+> $ docker pull riponway2a/adnav
+> $ docker run -d -p 8080:8080 riponway2a/adnav
+
 ## query format
 
+(for Postman)
 the endpoint is ws://localhost:8080/scan
 
 post body should be like this:
