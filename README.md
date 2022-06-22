@@ -11,7 +11,7 @@ In mac, if you want to launch from terminal, you will need to have your Desktop 
 ## query format
 
 (for Postman)
-the endpoint is ws://localhost:8080/scan
+the endpoint is **ws://localhost:8080/scan**
 
 post body should be like this:
 
