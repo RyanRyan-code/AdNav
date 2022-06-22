@@ -20,6 +20,12 @@ post body should be like this:
 unit for latitude and longitude is degree.
 unit for radius is meters.
 
+## algorithm
+
+First I tried to come up with a range of latitudes and longitudes. It should be big enough to include potential planes, but also small enough so that it won't cost too much time to calculate.
+
+Then I used geoTools to accurately calculate the distance between two points on earth, and removed the planes that are outside the r-ring. 
+
 ## ScheduledExecutorService over Timer
 
 Java Timer is unable to deal with client disconnection situations, so ScheduledExecutorService is used over Timer. 
