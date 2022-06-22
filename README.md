@@ -16,11 +16,11 @@ the endpoint is ws://localhost:8080/scan
 post body should be like this:
 
 {
-
 "latitude": 89,
-"longitude": 179,
-"radius" : 2000000
 
+"longitude": 179,
+
+"radius" : 2000000
 }
 
 
