@@ -1,4 +1,4 @@
-FROM maven:3-openjdk-18 as builder
+FROM maven:3-openjdk-17 as builder
 WORKDIR /app-build
 COPY . .
 RUN mvn package
