@@ -3,21 +3,17 @@
 ## how to run
 
 > $ docker pull riponway2a/adnav
+> 
 > $ docker run -d -p 8080:8080 riponway2a/adnav
 
 In mac, if you want to launch from terminal, you will need to have your Desktop Docker open at the same time. 
 
 ## query format
 
-(for Postman)
-the endpoint is ws://localhost:8080/scan
+the endpoint is <br>**ws://localhost:8080/scan**
 
 post body should be like this:
-{
-"latitude": 89,
-"longitude": 179,
-"radius" : 2000000
-}
+{<br>"latitude": 89,<br>"longitude": 179,<br>"radius" : 2000000<br>}
 
 unit for latitude and longitude is degree.
 unit for radius is meters.
