@@ -28,8 +28,12 @@ import java.util.Objects;
 class Task implements Runnable {
 
     public static String cachedResult = "";
-
-    private final String urlMain = "https://data-live.flightradar24.com/zones/fcgi/feed.js";
+    private static final String urlMain = "https://data-live.flightradar24.com/zones/fcgi/feed.js";
+    private double minLat, maxLat, minLon, maxLon;
+    private URL url;
+    private JsonObject jsonObject;
+    private DefaultGeographicCRS crs = DefaultGeographicCRS.WGS84;
+    private String res;
 
     WebSocketSession session;
     TextMessage message;
@@ -58,8 +62,6 @@ class Task implements Runnable {
 
         String urlBounds = "?bounds=";
 
-        double minLat, maxLat, minLon, maxLon;
-
         //edge cases
         minLat = Math.min(latitude+deltaLatitude, 90);
         maxLat = Math.max(latitude-deltaLatitude, -90);
@@ -75,7 +77,6 @@ class Task implements Runnable {
         urlBounds += maxLat+",";
         urlBounds += minLon+",";
         urlBounds += maxLon+"";
-        URL url = null;
 
         //build full url
         try {
@@ -85,7 +86,6 @@ class Task implements Runnable {
         }
 
         //execute http-request and get request-body
-        JsonObject jsonObject;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(url)
@@ -106,7 +106,6 @@ class Task implements Runnable {
         jsonObject.remove("version");
 
         //use geoTools to calculate distance
-        DefaultGeographicCRS crs = DefaultGeographicCRS.WGS84;
         GeodeticCalculator calc = new GeodeticCalculator(crs);
         calc.setStartingGeographicPoint(longitude, latitude);
 
@@ -129,7 +128,7 @@ class Task implements Runnable {
         }
 
         //return result
-        String res = jsonObject.toString();
+        res = jsonObject.toString();
         if(Objects.equals(cachedResult, res)){
             try {
                 session.sendMessage(new TextMessage("nothing changed"));
