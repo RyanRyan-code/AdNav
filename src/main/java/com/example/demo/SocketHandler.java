@@ -30,9 +30,9 @@ public class SocketHandler extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        Task t = new Task(session, message);
 
-        scheduler.scheduleAtFixedRate(new Task(session, message), 0, 1, TimeUnit.SECONDS);
-
+        scheduler.scheduleAtFixedRate(t, 0, 1, TimeUnit.SECONDS);
         Task.cachedResult = "";
 
     }

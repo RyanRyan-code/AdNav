@@ -4,6 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.springframework.web.socket.TextMessage;
@@ -24,6 +28,8 @@ import java.util.Objects;
 class Task implements Runnable {
 
     public static String cachedResult = "";
+
+    private final String urlMain = "https://data-live.flightradar24.com/zones/fcgi/feed.js";
 
     WebSocketSession session;
     TextMessage message;
@@ -49,7 +55,7 @@ class Task implements Runnable {
 
         //build http request
         //build the full url with query parameters
-        String urlMain = "https://data-live.flightradar24.com/zones/fcgi/feed.js";
+
         String urlBounds = "?bounds=";
 
         double minLat, maxLat, minLon, maxLon;
@@ -70,51 +76,32 @@ class Task implements Runnable {
         urlBounds += minLon+",";
         urlBounds += maxLon+"";
         URL url = null;
+
+        //build full url
         try {
             url = new URL(urlMain + urlBounds);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
 
-        //connect and get response
-        HttpURLConnection con = null;
-        try {
-            con = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            con.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            throw new RuntimeException(e);
-        }
-        con.setRequestProperty("Content-Type", "application/json");
+        //execute http-request and get request-body
+        JsonObject jsonObject;
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
 
-        //read json
-        BufferedReader in = null;
+        Response response = null;
         try {
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        String inputLine;
-        StringBuffer content = new StringBuffer();
-        while (true) {
-            try {
-                if (!((inputLine = in.readLine()) != null)) break;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            content.append(inputLine);
-        }
-        try {
-            in.close();
+            response = client.newCall(request).execute();
+            //why can't I assert (response.body!=null) here?
+            //response can only be consumed once?
+            jsonObject = JsonParser.parseString(response.body().string()).getAsJsonObject();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         //remove irrelevant entries
-        JsonObject jsonObject = JsonParser.parseString(content.toString()).getAsJsonObject();
         jsonObject.remove("full_count");
         jsonObject.remove("version");
 
@@ -141,11 +128,8 @@ class Task implements Runnable {
             jsonObject.remove(key);
         }
 
-        //close connection and return result
-        con.disconnect();
+        //return result
         String res = jsonObject.toString();
-
-
         if(Objects.equals(cachedResult, res)){
             try {
                 session.sendMessage(new TextMessage("nothing changed"));
